@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 import 'package:test/test.dart';
 
@@ -84,7 +83,7 @@ class TicTacToeGame {
   }
 }
 
-void main() {
+void testgame() {
   TicTacToeGame game = new TicTacToeGame();
   print("Testing TicTacToeGame");
   while (true) {
