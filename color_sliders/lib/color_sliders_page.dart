@@ -23,13 +23,41 @@ class _ColorSlidersPageState extends State<ColorSlidersPage> {
         ),
         body: Column(
           children: [
-            ColorSlider(title: "Red", value: redvalue, color: Colors.red),
-            ColorSlider(title: "Green", value: greenvalue, color: Colors.green),
-            ColorSlider(title: "Blue", value: bluevalue, color: Colors.blue),
+            ColorSlider(
+              title: "Red",
+              value: redvalue,
+              color: Colors.red,
+              onChange: (newValue) {
+                setState(() {
+                  redvalue = newValue;
+                });
+              },
+            ),
+            ColorSlider(
+              title: "Green",
+              value: greenvalue,
+              color: Colors.green,
+              onChange: (newValue) {
+                setState(() {
+                  greenvalue = newValue;
+                });
+              },
+            ),
+            ColorSlider(
+              title: "Blue",
+              value: bluevalue,
+              color: Colors.blue,
+              onChange: (newValue) {
+                setState(() {
+                  bluevalue = newValue;
+                });
+              },
+            ),
             Expanded(
               child: Container(
                 margin: const EdgeInsets.all(20.0),
-                color: Colors.red,
+                color: Color.fromRGBO((255 * redvalue).round(),
+                    (255 * greenvalue).round(), (255 * bluevalue).round(), 1.0),
               ),
             )
           ],
