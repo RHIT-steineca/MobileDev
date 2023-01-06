@@ -66,10 +66,10 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           child: Image.asset(
             (game.board[k] == Mark.x)
-                ? Image.asset("tictactoe_images/x.png")
+                ? "tictactoe_images/x.png"
                 : ((game.board[k] == Mark.o)
-                    ? Image.asset("tictactoe_images/o.png")
-                    : Image.asset("tictactoe_images/blank.png")),
+                    ? "tictactoe_images/o.png"
+                    : "tictactoe_images/blank.png"),
           ),
         ),
       );

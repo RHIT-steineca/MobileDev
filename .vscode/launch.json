@@ -1,0 +1,68 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "color_sliders",
+            "cwd": "color_sliders",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "color_sliders (profile mode)",
+            "cwd": "color_sliders",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "color_sliders (release mode)",
+            "cwd": "color_sliders",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "dart_playground",
+            "cwd": "dart_playground",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "dart_playground (profile mode)",
+            "cwd": "dart_playground",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "dart_playground (release mode)",
+            "cwd": "dart_playground",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "firstflutterapp",
+            "cwd": "firstflutterapp",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "firstflutterapp (profile mode)",
+            "cwd": "firstflutterapp",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "firstflutterapp (release mode)",
+            "cwd": "firstflutterapp",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
