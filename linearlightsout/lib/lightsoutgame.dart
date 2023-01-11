@@ -12,7 +12,7 @@ class LightsOutGame {
     linearlights = List.filled(numLights, false);
     var rng = Random();
     for (int index = 0; index < numLights; index++) {
-      if (rng.nextInt(1) == 0) {
+      if (rng.nextInt(2) == 0) {
         fliplight(index - 1);
         fliplight(index);
         fliplight(index + 1);
@@ -25,7 +25,7 @@ class LightsOutGame {
   }
 
   void selectLight(int index) {
-    if (index < 0 || index > numLights || state == GameState.win) {
+    if (index < 0 || index >= numLights || state == GameState.win) {
       return;
     }
     fliplight(index - 1);
@@ -36,7 +36,7 @@ class LightsOutGame {
   }
 
   void fliplight(int index) {
-    if (index < 0 || index > numLights) {
+    if (index < 0 || index >= numLights) {
       return;
     } else if (linearlights[index] == true) {
       linearlights[index] = false;
@@ -67,12 +67,16 @@ class LightsOutGame {
     String statestring = "";
     if (state == GameState.active) {
       if (turns == 0) {
-        statestring = "Try to make all the lights match!";
+        statestring = "Try to turn off all the lights";
       } else {
         statestring = "Num Moves = $turns";
       }
     } else if (state == GameState.win) {
-      statestring = "You won in $turns turns!";
+      if (turns == 1) {
+        statestring = "You won in only 1 turn!";
+      } else {
+        statestring = "You won in $turns turns!";
+      }
     }
     return statestring;
   }
