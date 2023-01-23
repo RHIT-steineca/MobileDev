@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_quotes/components/movie_quote_row_component.dart';
 import 'package:movie_quotes/managers/movie_quote_collection_manager.dart';
 import 'package:movie_quotes/models/movie_quote.dart';
+import 'package:movie_quotes/pages/login_page.dart';
 import 'package:movie_quotes/pages/movie_quote_details_page.dart';
 
 class MovieQuotesListPage extends StatefulWidget {
@@ -63,6 +64,18 @@ class _MovieQuotesListPageState extends State<MovieQuotesListPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Movie Quotes"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              print("Clicked login");
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (BuildContext context) {
+                return LoginPage();
+              }));
+            },
+            icon: const Icon(Icons.login),
+          ),
+        ],
       ),
       backgroundColor: Colors.grey[100],
       body: ListView(
