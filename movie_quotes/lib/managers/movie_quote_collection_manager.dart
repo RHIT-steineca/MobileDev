@@ -18,7 +18,25 @@ class MovieQuotesCollectionManager {
         .orderBy(kMovieQuote_lastTouched, descending: true)
         .snapshots()
         .listen((QuerySnapshot querySnapshot) {
-      print(querySnapshot.docs);
+      latestMovieQuotes =
+          querySnapshot.docs.map((doc) => MovieQuote.from(doc)).toList();
+      observer();
     });
+  }
+
+  void stopListening(StreamSubscription? subscription) {
+    subscription?.cancel();
+  }
+
+  Future<void> addQuote({required String quote, required String movie}) {
+    return _ref
+        .add({
+          kMovieQuote_quote: quote,
+          kMovieQuote_movie: movie,
+          kMovieQuote_lastTouched: Timestamp.now(),
+        })
+        .then((DocumentReference docRef) =>
+            print("Movie Quote added with id ${docRef.id}"))
+        .catchError((error) => print("Failed to add Movie Quote: $error"));
   }
 }

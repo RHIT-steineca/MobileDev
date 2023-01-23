@@ -25,51 +25,40 @@ class _MovieQuotesListPageState extends State<MovieQuotesListPage> {
     super.initState();
     movieQuotesSubscription =
         MovieQuotesCollectionManager.instance.startListening(() {
-      print("New quotes");
       setState(() {});
     });
-    // quotes.add(
-    //   MovieQuote(
-    //     quote: "I'll be back",
-    //     movie: "The Terminator",
-    //   ),
-    // );
-    // quotes.add(
-    //   MovieQuote(
-    //     quote:
-    //         "Hello. My name is Inigo Montoya. You killed my father. Prepare to die.",
-    //     movie: "The Princess Bride",
-    //   ),
-    // );
   }
 
   @override
   void dispose() {
     quoteTextController.dispose();
     movieTextController.dispose();
+    MovieQuotesCollectionManager.instance
+        .stopListening(movieQuotesSubscription);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<MovieQuoteRow> movieRows = quotes
-        .map((mq) => MovieQuoteRow(
-              movieQuote: mq,
-              onTap: () {
-                print(
-                    "You clicked on the movie quote ${mq.quote} - ${mq.movie}");
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return MovieQuoteDetailsPage(mq);
-                    },
-                  ),
-                );
-              },
-            ))
-        .toList();
+    final List<MovieQuoteRow> movieRows =
+        MovieQuotesCollectionManager.instance.latestMovieQuotes
+            .map((mq) => MovieQuoteRow(
+                  movieQuote: mq,
+                  onTap: () {
+                    print(
+                        "You clicked on the movie quote ${mq.quote} - ${mq.movie}");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return MovieQuoteDetailsPage(mq.documentId!);
+                        },
+                      ),
+                    );
+                    setState(() {});
+                  },
+                ))
+            .toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -140,12 +129,10 @@ class _MovieQuotesListPageState extends State<MovieQuotesListPage> {
               child: const Text('Create'),
               onPressed: () {
                 setState(() {
-                  // quotes.add(
-                  //   MovieQuote(
-                  //     quote: quoteTextController.text,
-                  //     movie: movieTextController.text,
-                  //   ),
-                  // );
+                  MovieQuotesCollectionManager.instance.addQuote(
+                    quote: quoteTextController.text,
+                    movie: movieTextController.text,
+                  );
                   quoteTextController.text = "";
                   movieTextController.text = "";
                 });
