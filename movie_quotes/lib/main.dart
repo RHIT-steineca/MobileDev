@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_quotes/pages/login_page.dart';
 import 'package:movie_quotes/pages/movie_quotes_list_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MovieQuotesListPage(),
+      home: const LoginPage(),
     );
   }
 }
