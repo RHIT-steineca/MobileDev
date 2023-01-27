@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:movie_quotes/managers/auth_manager.dart';
+import 'package:movie_quotes/pages/movie_quotes_list_page.dart';
 
 class EmailPasswordAuthPage extends StatefulWidget {
   final bool isNewUser;
@@ -20,20 +21,27 @@ class _EmailPasswordAuthPageState extends State<EmailPasswordAuthPage> {
   final passwordTextController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  UniqueKey? _loginObserverKey;
+
   @override
   void initState() {
-    AuthManager.instance.startListening();
+    _loginObserverKey = AuthManager.instance.addLoginObserver(() {});
+    super.initState();
   }
 
   @override
   void dispose() {
     emailTextController.dispose();
     passwordTextController.dispose();
+    AuthManager.instance.removeObserver(_loginObserverKey);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    emailTextController.text = "test@test.com";
+    passwordTextController.text = "test123";
+
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.isNewUser
@@ -101,8 +109,15 @@ class _EmailPasswordAuthPageState extends State<EmailPasswordAuthPage> {
                             email: emailTextController.text,
                             password: passwordTextController.text);
                       } else {
-                        print("TODO: Log in an existing user");
+                        AuthManager.instance.loginExistingUserEmailPassword(
+                            context: context,
+                            email: emailTextController.text,
+                            password: passwordTextController.text);
                       }
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        return MovieQuotesListPage();
+                      }));
                     } else {
                       print("This form isn't valid, do nothing");
                     }

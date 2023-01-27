@@ -45,20 +45,26 @@ class AuthManager {
   }
 
   UniqueKey addLoginObserver(Function observer) {
+    startListening();
     UniqueKey key = UniqueKey();
     _loginObservers[key] = observer;
     return key;
   }
 
   UniqueKey addLogoutObserver(Function observer) {
+    startListening();
     UniqueKey key = UniqueKey();
     _logoutObservers[key] = observer;
     return key;
   }
 
-  void removeObserver(UniqueKey key) {
+  void removeObserver(UniqueKey? key) {
     _loginObservers.remove(key);
     _logoutObservers.remove(key);
+  }
+
+  void signOut() {
+    FirebaseAuth.instance.signOut();
   }
 
   void createNewUserEmailPassword({
@@ -89,6 +95,33 @@ class AuthManager {
     }
   }
 
+  void loginExistingUserEmailPassword({
+    required BuildContext context,
+    required String email,
+    required String password,
+  }) {
+    try {
+      final credential = FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        _showAuthSnackbar(
+            context: context,
+            authErrorMessage: "Email not associated with an account.");
+      } else if (e.code == 'wrong-password') {
+        _showAuthSnackbar(
+            context: context, authErrorMessage: "Incorrect password provided.");
+      }
+    } catch (e) {
+      _showAuthSnackbar(
+        context: context,
+        authErrorMessage: e.toString(),
+      );
+    }
+  }
+
   void _showAuthSnackbar({
     required BuildContext context,
     required String authErrorMessage,
@@ -99,11 +132,6 @@ class AuthManager {
       ),
     );
   }
-
-  void loginExistingUserEmailPassword({
-    required String email,
-    required String password,
-  }) {}
 
   String get email => _user?.email ?? "";
   String get uid => _user?.uid ?? "";

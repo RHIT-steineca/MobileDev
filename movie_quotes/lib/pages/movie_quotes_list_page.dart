@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:movie_quotes/components/movie_quote_row_component.dart';
+import 'package:movie_quotes/managers/auth_manager.dart';
 import 'package:movie_quotes/managers/movie_quote_collection_manager.dart';
 import 'package:movie_quotes/models/movie_quote.dart';
 import 'package:movie_quotes/pages/login_page.dart';
@@ -20,12 +21,21 @@ class _MovieQuotesListPageState extends State<MovieQuotesListPage> {
   final movieTextController = TextEditingController();
 
   StreamSubscription? movieQuotesSubscription;
+  UniqueKey? _loginObserverKey;
+  UniqueKey? _logoutObserverKey;
 
   @override
   void initState() {
     super.initState();
     movieQuotesSubscription =
         MovieQuotesCollectionManager.instance.startListening(() {
+      setState(() {});
+    });
+
+    _loginObserverKey = AuthManager.instance.addLoginObserver(() {
+      setState(() {});
+    });
+    _logoutObserverKey = AuthManager.instance.addLogoutObserver(() {
       setState(() {});
     });
   }
@@ -36,6 +46,8 @@ class _MovieQuotesListPageState extends State<MovieQuotesListPage> {
     movieTextController.dispose();
     MovieQuotesCollectionManager.instance
         .stopListening(movieQuotesSubscription);
+    AuthManager.instance.removeObserver(_loginObserverKey);
+    AuthManager.instance.removeObserver(_logoutObserverKey);
     super.dispose();
   }
 
@@ -64,18 +76,28 @@ class _MovieQuotesListPageState extends State<MovieQuotesListPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Movie Quotes"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              print("Clicked login");
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (BuildContext context) {
-                return LoginPage();
-              }));
-            },
-            icon: const Icon(Icons.login),
-          ),
-        ],
+        actions: AuthManager.instance.isSignedIn
+            ? [
+                IconButton(
+                  onPressed: () {
+                    AuthManager.instance.signOut();
+                  },
+                  tooltip: "Log out",
+                  icon: const Icon(Icons.logout),
+                ),
+              ]
+            : [
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (BuildContext context) {
+                      return const LoginPage();
+                    }));
+                  },
+                  tooltip: "Log in",
+                  icon: const Icon(Icons.login),
+                ),
+              ],
       ),
       backgroundColor: Colors.grey[100],
       body: ListView(
