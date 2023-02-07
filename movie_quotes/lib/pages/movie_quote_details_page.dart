@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:movie_quotes/components/user_action_drawer.dart';
+import 'package:movie_quotes/managers/auth_manager.dart';
 import 'package:movie_quotes/managers/movie_quote_collection_manager.dart';
 import 'package:movie_quotes/managers/movie_quote_document_manager.dart';
 
@@ -43,63 +44,76 @@ class _MovieQuoteDetailsPageState extends State<MovieQuoteDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bool showEditDelete =
+        MovieQuotesDocumentManager.instance.latestMovieQuote != null &&
+            AuthManager.instance.uid.isNotEmpty &&
+            AuthManager.instance.uid ==
+                MovieQuotesDocumentManager.instance.latestMovieQuote!.authorUID;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Movie Quotes"),
         actions: [
-          IconButton(
-            onPressed: () {
-              print("Clicked edit");
-              showEditQuoteDialog(context);
-            },
-            icon: const Icon(Icons.edit),
+          Visibility(
+            visible: showEditDelete,
+            child: IconButton(
+              onPressed: () {
+                print("Clicked edit");
+                showEditQuoteDialog(context);
+              },
+              icon: const Icon(Icons.edit),
+            ),
           ),
-          IconButton(
-            onPressed: () {
-              print("Clicked delete");
-              MovieQuotesDocumentManager.instance.delete();
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.delete),
-          )
+          Visibility(
+            visible: showEditDelete,
+            child: IconButton(
+              onPressed: () {
+                print("Clicked delete");
+                final justDeletedQuote =
+                    MovieQuotesDocumentManager.instance.latestMovieQuote!.quote;
+                final justDeletedMovie =
+                    MovieQuotesDocumentManager.instance.latestMovieQuote!.movie;
+                MovieQuotesDocumentManager.instance.delete();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text("Quote Deleted"),
+                    action: SnackBarAction(
+                      label: 'Undo',
+                      onPressed: () {
+                        MovieQuotesCollectionManager.instance.addQuote(
+                          quote: justDeletedQuote,
+                          movie: justDeletedMovie,
+                        );
+                      },
+                    ),
+                  ),
+                );
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.delete),
+            ),
+          ),
         ],
       ),
       backgroundColor: Colors.grey[100],
-      drawer: UserActionDrawer(),
-      body: Center(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 50.0),
-          child: SizedBox(
-            width: 700.0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(bottom: 25.0),
-                  child: Text(
-                    MovieQuotesDocumentManager
-                            .instance.latestMovieQuote?.quote ??
-                        "",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20.0),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    MovieQuotesDocumentManager
-                            .instance.latestMovieQuote?.movie ??
-                        "",
-                    style: TextStyle(
-                      fontSize: 30.0,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ),
-              ],
+      body: Container(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            LabelledTextDisplay(
+              title: "Quote:",
+              content:
+                  MovieQuotesDocumentManager.instance.latestMovieQuote?.quote ??
+                      "",
+              iconData: Icons.format_quote_outlined,
             ),
-          ),
+            LabelledTextDisplay(
+              title: "Movie:",
+              content:
+                  MovieQuotesDocumentManager.instance.latestMovieQuote?.movie ??
+                      "",
+              iconData: Icons.movie_filter_outlined,
+            ),
+          ],
         ),
       ),
     );
@@ -174,6 +188,60 @@ class _MovieQuoteDetailsPageState extends State<MovieQuoteDetailsPage> {
           ],
         );
       },
+    );
+  }
+}
+
+class LabelledTextDisplay extends StatelessWidget {
+  final String title;
+  final String content;
+  final IconData iconData;
+
+  const LabelledTextDisplay({
+    super.key,
+    required this.title,
+    required this.content,
+    required this.iconData,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+                fontSize: 30.0,
+                fontWeight: FontWeight.w800,
+                fontFamily: "Caveat"),
+          ),
+          Card(
+            child: Container(
+              padding: const EdgeInsets.all(20.0),
+              child: Row(
+                children: [
+                  Icon(iconData),
+                  const SizedBox(
+                    width: 8.0,
+                  ),
+                  Flexible(
+                    child: Text(
+                      content,
+                      style: const TextStyle(
+                        fontSize: 18.0,
+                        // fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

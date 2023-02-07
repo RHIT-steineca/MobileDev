@@ -1,15 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_quotes/managers/auth_manager.dart';
 
 class UserActionDrawer extends StatelessWidget {
-  const UserActionDrawer({super.key});
+  final Function() showAllCallback;
+  final Function() showOnlyMineCallback;
+  const UserActionDrawer({
+    required this.showAllCallback,
+    required this.showOnlyMineCallback,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: const [
+        children: [
           DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.blue,
@@ -22,16 +29,28 @@ class UserActionDrawer extends StatelessWidget {
                 "Movie Quotes",
               )),
           ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text("Show Only My Quotes"),
+            leading: Icon(Icons.person),
+            title: Text("Show Only My Quotes"),
+            onTap: () {
+              showOnlyMineCallback();
+              Navigator.of(context).pop();
+            },
           ),
           ListTile(
-            leading: const Icon(Icons.people),
-            title: const Text("Show All Quotes"),
+            leading: Icon(Icons.people),
+            title: Text("Show All Quotes"),
+            onTap: () {
+              showAllCallback();
+              Navigator.of(context).pop();
+            },
           ),
           ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text("Logout"),
+            leading: Icon(Icons.logout),
+            title: Text("Logout"),
+            onTap: () {
+              Navigator.of(context).pop();
+              AuthManager.instance.signOut();
+            },
           ),
         ],
       ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_quotes/components/movie_quote_row_component.dart';
 import 'package:movie_quotes/components/user_action_drawer.dart';
@@ -17,21 +18,18 @@ class MovieQuotesListPage extends StatefulWidget {
 }
 
 class _MovieQuotesListPageState extends State<MovieQuotesListPage> {
-  final quotes = <MovieQuote>[];
   final quoteTextController = TextEditingController();
   final movieTextController = TextEditingController();
 
-  StreamSubscription? movieQuotesSubscription;
+  bool _isShowingAllQuotes = true;
+
   UniqueKey? _loginObserverKey;
   UniqueKey? _logoutObserverKey;
 
   @override
   void initState() {
     super.initState();
-    movieQuotesSubscription =
-        MovieQuotesCollectionManager.instance.startListening(() {
-      setState(() {});
-    });
+    _showAllQuotes();
 
     _loginObserverKey = AuthManager.instance.addLoginObserver(() {
       setState(() {});
@@ -41,12 +39,22 @@ class _MovieQuotesListPageState extends State<MovieQuotesListPage> {
     });
   }
 
+  void _showAllQuotes() {
+    setState(() {
+      _isShowingAllQuotes = true;
+    });
+  }
+
+  void _showOnlyMyQuotes() {
+    setState(() {
+      _isShowingAllQuotes = false;
+    });
+  }
+
   @override
   void dispose() {
     quoteTextController.dispose();
     movieTextController.dispose();
-    MovieQuotesCollectionManager.instance
-        .stopListening(movieQuotesSubscription);
     AuthManager.instance.removeObserver(_loginObserverKey);
     AuthManager.instance.removeObserver(_logoutObserverKey);
     super.dispose();
@@ -54,26 +62,6 @@ class _MovieQuotesListPageState extends State<MovieQuotesListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<MovieQuoteRow> movieRows =
-        MovieQuotesCollectionManager.instance.latestMovieQuotes
-            .map((mq) => MovieQuoteRow(
-                  movieQuote: mq,
-                  onTap: () {
-                    print(
-                        "You clicked on the movie quote ${mq.quote} - ${mq.movie}");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return MovieQuoteDetailsPage(mq.documentId!);
-                        },
-                      ),
-                    );
-                    setState(() {});
-                  },
-                ))
-            .toList();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Movie Quotes"),
@@ -93,10 +81,35 @@ class _MovieQuotesListPageState extends State<MovieQuotesListPage> {
               ],
       ),
       backgroundColor: Colors.grey[100],
-      body: ListView(
-        children: movieRows,
-      ),
-      drawer: UserActionDrawer(),
+      body: FirestoreListView<MovieQuote>(
+          query: _isShowingAllQuotes
+              ? MovieQuotesCollectionManager.instance.allMovieQuotesQuery
+              : MovieQuotesCollectionManager.instance.mineOnlyMovieQuotesQuery,
+          itemBuilder: (context, snapshot) {
+            MovieQuote mq = snapshot.data();
+            return MovieQuoteRow(
+              movieQuote: mq,
+              onTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return MovieQuoteDetailsPage(
+                          mq.documentId!); // In Firebase use a documentId
+                    },
+                  ),
+                );
+                setState(() {});
+              },
+            );
+          }),
+      drawer: AuthManager.instance.isSignedIn
+          ? UserActionDrawer(showAllCallback: () {
+              _showAllQuotes();
+            }, showOnlyMineCallback: () {
+              _showOnlyMyQuotes();
+            })
+          : null,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (AuthManager.instance.isSignedIn) {
