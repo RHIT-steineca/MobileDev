@@ -1,3 +1,4 @@
+import 'package:flutterfire_ui/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -66,7 +67,26 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(
               height: 60.0,
             ),
-            LoginButton(title: "Or sign in with Google", callback: () {})
+            LoginButton(
+                title: "Or sign in with Google",
+                callback: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return SignInScreen(
+                          // providers: [],
+                          actions: [
+                            AuthStateChangeAction((context, state) {
+                              Navigator.of(context)
+                                  .popUntil((route) => route.isFirst);
+                            }),
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                })
           ],
         ),
       ),

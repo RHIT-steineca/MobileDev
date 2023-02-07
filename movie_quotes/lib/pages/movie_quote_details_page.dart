@@ -95,25 +95,40 @@ class _MovieQuoteDetailsPageState extends State<MovieQuoteDetailsPage> {
         ],
       ),
       backgroundColor: Colors.grey[100],
-      body: Container(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            LabelledTextDisplay(
-              title: "Quote:",
-              content:
-                  MovieQuotesDocumentManager.instance.latestMovieQuote?.quote ??
-                      "",
-              iconData: Icons.format_quote_outlined,
+      body: Center(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 50.0),
+          child: SizedBox(
+            width: 700.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 25.0),
+                  child: Text(
+                    MovieQuotesDocumentManager
+                            .instance.latestMovieQuote?.quote ??
+                        "",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    MovieQuotesDocumentManager
+                            .instance.latestMovieQuote?.movie ??
+                        "",
+                    style: TextStyle(
+                      fontSize: 30.0,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            LabelledTextDisplay(
-              title: "Movie:",
-              content:
-                  MovieQuotesDocumentManager.instance.latestMovieQuote?.movie ??
-                      "",
-              iconData: Icons.movie_filter_outlined,
-            ),
-          ],
+          ),
         ),
       ),
     );

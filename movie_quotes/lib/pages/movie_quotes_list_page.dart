@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
+import 'package:flutterfire_ui/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_quotes/components/movie_quote_row_component.dart';
 import 'package:movie_quotes/components/user_action_drawer.dart';
@@ -82,33 +82,37 @@ class _MovieQuotesListPageState extends State<MovieQuotesListPage> {
       ),
       backgroundColor: Colors.grey[100],
       body: FirestoreListView<MovieQuote>(
-          query: _isShowingAllQuotes
-              ? MovieQuotesCollectionManager.instance.allMovieQuotesQuery
-              : MovieQuotesCollectionManager.instance.mineOnlyMovieQuotesQuery,
-          itemBuilder: (context, snapshot) {
-            MovieQuote mq = snapshot.data();
-            return MovieQuoteRow(
-              movieQuote: mq,
-              onTap: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return MovieQuoteDetailsPage(
-                          mq.documentId!); // In Firebase use a documentId
-                    },
-                  ),
-                );
-                setState(() {});
-              },
-            );
-          }),
+        query: _isShowingAllQuotes
+            ? MovieQuotesCollectionManager.instance.allMovieQuotesQuery
+            : MovieQuotesCollectionManager.instance.mineOnlyMovieQuotesQuery,
+        itemBuilder: (context, snapshot) {
+          MovieQuote mq = snapshot.data();
+          return MovieQuoteRow(
+            movieQuote: mq,
+            onTap: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return MovieQuoteDetailsPage(
+                        mq.documentId!); // In Firebase use a documentId
+                  },
+                ),
+              );
+              setState(() {});
+            },
+          );
+        },
+      ),
       drawer: AuthManager.instance.isSignedIn
-          ? UserActionDrawer(showAllCallback: () {
-              _showAllQuotes();
-            }, showOnlyMineCallback: () {
-              _showOnlyMyQuotes();
-            })
+          ? UserActionDrawer(
+              showAllCallback: () {
+                _showAllQuotes();
+              },
+              showOnlyMineCallback: () {
+                _showOnlyMyQuotes();
+              },
+            )
           : null,
       floatingActionButton: FloatingActionButton(
         onPressed: () {

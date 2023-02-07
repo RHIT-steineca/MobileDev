@@ -41,8 +41,8 @@ class _EmailPasswordAuthPageState extends State<EmailPasswordAuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    emailTextController.text = "test@test.com";
-    passwordTextController.text = "test123";
+    emailTextController.text = "";
+    passwordTextController.text = "";
 
     return Scaffold(
         appBar: AppBar(

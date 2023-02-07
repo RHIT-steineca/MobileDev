@@ -14,7 +14,7 @@ class MovieQuotesCollectionManager {
   MovieQuotesCollectionManager._privateConstructor()
       : _ref = FirebaseFirestore.instance.collection(kMovieQuoteCollectionPath);
 
-  StreamSubscription startListening(Function observer,
+  StreamSubscription startListening(Function() observer,
       {bool isFilteredForMine = false}) {
     Query query = _ref.orderBy(kMovieQuote_lastTouched, descending: true);
     if (isFilteredForMine) {
