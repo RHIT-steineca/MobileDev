@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:movie_quotes/components/movie_quote_row_component.dart';
+import 'package:movie_quotes/components/user_action_drawer.dart';
 import 'package:movie_quotes/managers/auth_manager.dart';
 import 'package:movie_quotes/managers/movie_quote_collection_manager.dart';
 import 'package:movie_quotes/models/movie_quote.dart';
@@ -77,15 +78,7 @@ class _MovieQuotesListPageState extends State<MovieQuotesListPage> {
       appBar: AppBar(
         title: const Text("Movie Quotes"),
         actions: AuthManager.instance.isSignedIn
-            ? [
-                IconButton(
-                  onPressed: () {
-                    AuthManager.instance.signOut();
-                  },
-                  tooltip: "Log out",
-                  icon: const Icon(Icons.logout),
-                ),
-              ]
+            ? null
             : [
                 IconButton(
                   onPressed: () {
@@ -103,14 +96,49 @@ class _MovieQuotesListPageState extends State<MovieQuotesListPage> {
       body: ListView(
         children: movieRows,
       ),
+      drawer: UserActionDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showCreateQuoteDialog(context);
+          if (AuthManager.instance.isSignedIn) {
+            showCreateQuoteDialog(context);
+          } else {
+            showMustLogInDialog(context);
+          }
         },
         tooltip: 'Create',
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  Future<void> showMustLogInDialog(BuildContext context) {
+    return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Login Required"),
+            content:
+                const Text("You must be signed in to perform this action."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                    return const LoginPage();
+                  }));
+                },
+                child: const Text("Log In"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancel"),
+              ),
+            ],
+          );
+        });
   }
 
   Future<void> showCreateQuoteDialog(BuildContext context) {

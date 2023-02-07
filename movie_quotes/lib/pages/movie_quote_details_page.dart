@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:movie_quotes/components/user_action_drawer.dart';
 import 'package:movie_quotes/managers/movie_quote_collection_manager.dart';
 import 'package:movie_quotes/managers/movie_quote_document_manager.dart';
 
@@ -64,6 +65,7 @@ class _MovieQuoteDetailsPageState extends State<MovieQuoteDetailsPage> {
         ],
       ),
       backgroundColor: Colors.grey[100],
+      drawer: UserActionDrawer(),
       body: Center(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 50.0),

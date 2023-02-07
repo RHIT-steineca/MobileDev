@@ -25,7 +25,9 @@ class _EmailPasswordAuthPageState extends State<EmailPasswordAuthPage> {
 
   @override
   void initState() {
-    _loginObserverKey = AuthManager.instance.addLoginObserver(() {});
+    _loginObserverKey = AuthManager.instance.addLoginObserver(() {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    });
     super.initState();
   }
 
