@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "839664565808",
+    "project_id": "flutterphotobucket",
+    "storage_bucket": "flutterphotobucket.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:839664565808:android:505372bb3e657aaf39f7f5",
+        "android_client_info": {
+          "package_name": "com.example.photo_bucket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "839664565808-nvc6m0unpqptlr4upgrk703t3slkmoud.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnaBIWdxIq6H99u_smmh_NelzTnEwKAu4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "839664565808-nvc6m0unpqptlr4upgrk703t3slkmoud.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
