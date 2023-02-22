@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutterfire_ui/firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -46,12 +48,12 @@ class _WorkoutList extends State<WorkoutList> {
           Workout workout = snapshot.data();
           return WorkoutRow(
             workout: workout,
-            onTap: () async {
-              await Navigator.push(
+            onTap: () {
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (BuildContext context) {
-                    return const WorkoutInfo();
+                    return WorkoutInfo(workout.documentId);
                   },
                 ),
               );

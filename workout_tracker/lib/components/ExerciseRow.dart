@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:workout_tracker/models/Exercise.dart';
 
 import '../models/Workout.dart';
 
 class ExerciseRow extends StatelessWidget {
-  final Exercise exercise;
+  final Map<String, dynamic> exercise;
   final Function() onTap;
 
   const ExerciseRow({
@@ -24,7 +23,7 @@ class ExerciseRow extends StatelessWidget {
             leading: const Icon(Icons.fitness_center_outlined),
             trailing: const Icon(Icons.chevron_right),
             title: Text(
-              exercise.name,
+              exercise["name"],
               overflow: TextOverflow.ellipsis,
             ),
           ),

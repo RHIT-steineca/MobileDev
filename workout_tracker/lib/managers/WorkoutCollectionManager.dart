@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../models/Exercise.dart';
 import '../models/Workout.dart';
 
 const String kUserCollectionPath = "tracker-collections";
@@ -22,7 +21,6 @@ class WorkoutCollectionManager {
         .snapshots()
         .listen((DocumentSnapshot docSnapshot) {
       latestWorkout = Workout.from(docSnapshot);
-      observer();
     });
   }
 
@@ -44,10 +42,27 @@ class WorkoutCollectionManager {
         .catchError((error) => print("Failed to add Workout: $error"));
   }
 
+  void updateWorkout({
+    required workoutName,
+    required exercises,
+  }) {
+    if (latestWorkout == null) {
+      return;
+    }
+    _ref.doc(latestWorkout!.documentId).update({
+      kWorkoutName: workoutName,
+      kExercises: exercises,
+    }).catchError((error) => print("Failed to edit the workout: $error"));
+  }
+
+  Future<void> deleteWorkout() {
+    return _ref.doc(latestWorkout?.documentId).delete();
+  }
+
   Query<Workout> get workoutsQuery => _ref
-      .withConverter<Workout>(
+      .withConverter(
         fromFirestore: (snapshot, _) => Workout.from(snapshot),
         toFirestore: (workout, _) => workout.toMap(),
       )
-      .where(kUserId, isEqualTo: FirebaseAuth.instance.currentUser!.uid);
+      .where(kUserId, isEqualTo: FirebaseAuth.instance.currentUser?.uid);
 }
