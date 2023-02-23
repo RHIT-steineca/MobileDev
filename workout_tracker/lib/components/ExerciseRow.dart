@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/Workout.dart';
 
 class ExerciseRow extends StatelessWidget {
-  final Map<String, dynamic> exercise;
+  final String exercise;
   final Function() onTap;
 
   const ExerciseRow({
@@ -21,9 +21,8 @@ class ExerciseRow extends StatelessWidget {
         child: Card(
           child: ListTile(
             leading: const Icon(Icons.fitness_center_outlined),
-            trailing: const Icon(Icons.chevron_right),
             title: Text(
-              exercise["name"],
+              exercise,
               overflow: TextOverflow.ellipsis,
             ),
           ),

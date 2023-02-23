@@ -21,6 +21,7 @@ class WorkoutCollectionManager {
         .snapshots()
         .listen((DocumentSnapshot docSnapshot) {
       latestWorkout = Workout.from(docSnapshot);
+      observer();
     });
   }
 

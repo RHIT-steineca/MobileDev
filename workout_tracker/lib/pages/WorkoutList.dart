@@ -111,12 +111,14 @@ class _WorkoutList extends State<WorkoutList> {
               ),
               child: const Text('Create'),
               onPressed: () {
-                setState(() {
-                  WorkoutCollectionManager.instance.addWorkout(
-                    workoutname: newWorkoutTextController.text,
-                  );
-                });
-                Navigator.of(context).pop();
+                if (!newWorkoutTextController.text.isEmpty) {
+                  setState(() {
+                    WorkoutCollectionManager.instance.addWorkout(
+                      workoutname: newWorkoutTextController.text,
+                    );
+                  });
+                  Navigator.of(context).pop();
+                }
               },
             ),
           ],
